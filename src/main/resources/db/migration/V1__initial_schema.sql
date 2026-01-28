@@ -1,0 +1,8 @@
+CREATE TABLE usuario (
+    id BIGSERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL UNIQUE,
+    senha_hash VARCHAR(255) NOT NULL,
+    status VARCHAR(20) NOT NULL,
+    data_criacao TIMESTAMP NOT NULL DEFAULT NOW()
+);
