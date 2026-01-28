@@ -28,12 +28,16 @@ public class AuthController {
     @PostMapping("/login")
     public String login(@RequestBody LoginRequest request) {
         Usuario usuario = usuarioRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("Usuário ou senha inválidos"));
+            .orElseThrow(() -> new RuntimeException("Usuário ou senha inválidos"));
 
         if (!passwordEncoder.matches(request.getSenha(), usuario.getSenha())) {
             throw new RuntimeException("Usuário ou senha inválidos");
         }
 
-        return jwtService.generateToken(usuario.getEmail());
+        java.util.List<String> roles = usuario.getRoles().stream()
+            .map(role -> "ROLE_" + role.getNome().toUpperCase())
+            .toList();
+
+        return jwtService.generateToken(usuario.getEmail(), roles);
     }
 }

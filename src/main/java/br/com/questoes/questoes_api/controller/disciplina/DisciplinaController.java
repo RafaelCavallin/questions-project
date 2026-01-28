@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -20,24 +21,28 @@ public class DisciplinaController {
 
     private final DisciplinaService service;
 
+    @PreAuthorize("hasAnyRole('ADMIN','PROFESSOR')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public DisciplinaResponseDTO criar(@RequestBody @Valid DisciplinaRequestDTO dto) {
         return service.criar(dto);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','PROFESSOR','ALUNO')")
     @GetMapping("/{id}")
     public ResponseEntity<DisciplinaResponseDTO> buscarPorId(@PathVariable Long id) {
         DisciplinaResponseDTO dto = service.buscarPorId(id);
         return ResponseEntity.ok(dto);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}/remover")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletar(@PathVariable Long id) {
         service.deletar(id);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','PROFESSOR','ALUNO')")
     @GetMapping
     public ResponseEntity<Page<DisciplinaResponseDTO>> listarTodos(
             @RequestParam(defaultValue = "0") int page,
@@ -48,6 +53,7 @@ public class DisciplinaController {
         return ResponseEntity.ok(disciplinas);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','PROFESSOR')")
     @PutMapping("/{id}")
     public DisciplinaResponseDTO atualizar(
             @PathVariable Long id,
@@ -56,6 +62,7 @@ public class DisciplinaController {
         return service.atualizar(id, dto);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void desativar(@PathVariable Long id) {

@@ -1,6 +1,7 @@
 package br.com.questoes.questoes_api.controller.role;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,12 +22,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RoleController {
     
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<Role> buscarPorId(@PathVariable Long id) {
         Role role = roleService.buscarPorId(id);
         return ResponseEntity.ok(role);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<org.springframework.data.domain.Page<Role>> listarTodos(
             @RequestParam(defaultValue = "0") int page,
@@ -35,6 +38,7 @@ public class RoleController {
         return ResponseEntity.ok(roles);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<Role> editar(@PathVariable Long id, @RequestBody RoleCreateRequestDto dto) {
         Role role = roleService.editarRole(id, dto.nome(), dto.ativo());
@@ -43,12 +47,14 @@ public class RoleController {
 
     private final RoleService roleService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<Role> criar(@RequestBody RoleCreateRequestDto dto) {
         Role role = roleService.criarRole(dto.nome());
         return ResponseEntity.ok(role);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         roleService.deletarRole(id);

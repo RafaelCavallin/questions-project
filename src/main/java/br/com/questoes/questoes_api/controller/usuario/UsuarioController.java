@@ -3,6 +3,7 @@ package br.com.questoes.questoes_api.controller.usuario;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,12 +28,14 @@ public class UsuarioController {
 
     private final UsuarioService usuarioService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         usuarioService.deletarUsuario(id);
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','PROFESSOR')")
     @PutMapping("/{id}")
     public ResponseEntity<UsuarioResponse> editar(@PathVariable Long id, @RequestBody UsuarioCreateRequest dto) {
         Usuario usuario = usuarioService.editarUsuario(id, dto);
@@ -46,6 +49,7 @@ public class UsuarioController {
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','PROFESSOR','ALUNO')")
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioResponse> buscarPorId(@PathVariable Long id) {
         Usuario usuario = usuarioService.buscarPorId(id);
