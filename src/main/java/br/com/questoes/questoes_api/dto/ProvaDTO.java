@@ -1,9 +1,9 @@
 package br.com.questoes.questoes_api.dto;
 
-import br.com.questoes.questoes_api.model.ObjetivoProva;
 import java.time.LocalDateTime;
 import java.util.Set;
 
+import br.com.questoes.questoes_api.domain.ObjetivoProva;
 import lombok.Getter;
 import lombok.Setter;
 
